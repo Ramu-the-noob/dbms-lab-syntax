@@ -41,7 +41,137 @@ joining tables : select * from t-name1 leftjoin t-name2 on t-name1.foreign key =
 
                  select * from t-name1 join t-name2 on t-name1.foreign key = t-name2.foreign key;
 
+functions in mysql : select count(col) from t-name;
+                     select max(col) from t-name;
+                     select min(col) from t-name;
+                     select avg(col) from t-name;
+                     select sum(col) from t-name;
+                     select concat(col1, col2) as col3 from t-name; <- use aggregrate_function as new_col_name
+
+ordering (asc) : select * from t-name order by col;
+oredering(desc) : select * from t-name order by col desc;
+
+create view : create view v_name as select col1, col2, .. from t-name;
+
+group by clause : select * from t-name group by col having condition with roll up; <- roll up give total of grouped col
+(using having not where)
+
+how to make function pl/sql :
+
+    CREATE OR REPLACE FUNCTION function_name (
+    parameter_1 IN data_type,
+    parameter_2 IN data_type
+)
+RETURN return_data_type
+IS
+    -- Declarative section: Define local variables here
+    v_result return_data_type;
+BEGIN
+    -- Execution block: Your logic goes here
+    v_result := parameter_1 + parameter_2;
+
+    RETURN v_result;
+
+EXCEPTION
+    -- Exception block: Handle errors gracefully
+        DBMS_OUTPUT.PUT_LINE('An error occurred.');
+        RETURN NULL;
+END;
+/
+
+how to make procedure in pl/sql:
+
+    CREATE [OR REPLACE] PROCEDURE procedure_name (
+    parameter1 IN data_type,
+    parameter2 OUT data_type
+)
+IS
+    -- Declarative section (local variables)
+BEGIN
+    -- Execution block (SQL and PL/SQL logic)
+EXCEPTION
+    -- Exception handling
+END;
+/
+
+how to make cursor in pl/sql (cursor is temporary area for processing requests):
+
+    DECLARE
+    -- 1. Define the cursor with a name and a query
+    CURSOR cursor_name IS
+        SELECT column1, column2, ...
+        FROM table_name
+        WHERE condition;
+BEGIN
+
+    FOR record_name IN cursor_name LOOP
+
+        -- Access data using: record_name.column_name
+        statements_to_execute;
+
+    END LOOP;
+END;
+/
 
 
+how to make trigger in pl/sql :
+
+    CREATE OR REPLACE TRIGGER audit_salary_change
+BEFORE UPDATE OF salary ON employees
+FOR EACH ROW
+BEGIN
+    -- Insert record into an audit table
+    INSERT INTO salary_audit (emp_id, old_salary, new_salary, change_date)
+    VALUES (:OLD.employee_id, :OLD.salary, :NEW.salary, SYSDATE);
+END;
+/
 
 
+how to make package in pl/sql :
+
+    Head
+
+    CREATE [OR REPLACE] PACKAGE package_name IS
+
+    -- Public Constant Declarations
+    constant_name CONSTANT data_type := value;
+
+    -- Public Variable Declarations
+    variable_name data_type;
+
+    -- Public Cursor Declarations
+    CURSOR cursor_name RETURN return_type;
+
+    -- Public Procedure Declarations (Header only)
+    PROCEDURE procedure_name (parameter1 IN data_type, parameter2 OUT data_type);
+
+    -- Public Function Declarations (Header only)
+    FUNCTION function_name (parameter1 IN data_type) RETURN return_data_type;
+
+END package_name;
+/
+
+    Body
+
+    CREATE OR REPLACE PACKAGE BODY emp_mgmt IS
+
+    -- Private function (cannot be called from outside the package)
+    FUNCTION calculate_bonus(p_sal NUMBER) RETURN NUMBER IS
+    BEGIN
+        RETURN p_sal * 0.10;
+    END calculate_bonus;
+
+    PROCEDURE add_employee(p_name VARCHAR2, p_sal NUMBER) IS
+    BEGIN
+        INSERT INTO employees (name, salary) VALUES (p_name, p_sal);
+    END add_employee;
+
+    FUNCTION get_annual_salary(p_emp_id NUMBER) RETURN NUMBER IS
+        v_sal NUMBER;
+    BEGIN
+        SELECT salary INTO v_sal FROM employees WHERE employee_id = p_emp_id;
+        RETURN (v_sal * 12) + calculate_bonus(v_sal);
+    END get_annual_salary;
+
+END emp_mgmt;
+/
