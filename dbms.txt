@@ -1,0 +1,47 @@
+Create database : create database database-name;
+
+To use database : use database-name;
+
+To delete database : drop database database-name;
+
+To Show databases : show databases;
+
+To create table : create table t-name(col1 type, col2 type, ...);
+
+To display output : select * from t-name;
+                            or
+                    select col1,col2,.. from t-name;
+
+To delete table : drop table t-name;
+
+Add column to table : alter table t-name add col_type;
+
+Rename column : alter table t-name rename column col1 to col2;
+
+Modify column : alter table table t-name modify column col type;
+
+Insert data : insert into t-name values(val1, val2, val3, ..);
+                            or
+              insert into t-name values(row1), (row2), (row3),...;
+
+delete row :
+
+Selecting with condition : select * from t-name where condition;
+                           select * from t-name where (condition1 AND,OR,NOT condition2,..);
+
+Updating values : update t-name set col1 = val where condition;
+
+add constraint : alter table add constraint con-name check(condition);
+
+add primary key : create table (col1 type primary key, col2 type,...);
+
+add foreign key : create table (col1 type, col2 type, ... foreign key(col a) references t-name(col a), foreign key(col b) references t-name(col b)..);
+
+joining tables : select * from t-name1 leftjoin t-name2 on t-name1.foreign key = t-name2.foreign key;
+
+                 select * from t-name1 join t-name2 on t-name1.foreign key = t-name2.foreign key;
+
+
+
+
+
